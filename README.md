@@ -70,4 +70,4 @@ Para manter rodando no GitHub:
 4. Faca um push para a branch principal.
 5. Use `Actions > Check Cita Sevilla > Run workflow` para testar manualmente.
 
-O agendamento `cron: "0 * * * *"` executa no minuto zero de cada hora em UTC. O arquivo `data/results.csv` e commitado de volta no repositorio apos cada execucao. Screenshots e arquivos de debug ficam como artifacts da execucao em `Actions`, para consulta/download.
+O agendamento `cron: "17 * * * *"` executa uma vez por hora, no minuto 17 em UTC. O GitHub pode atrasar alguns minutos a execucao agendada. O arquivo `data/results.csv` e commitado de volta no repositorio apos cada execucao. Screenshots e arquivos de debug ficam como artifacts da execucao em `Actions`, para consulta/download.
