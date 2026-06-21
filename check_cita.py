@@ -241,6 +241,22 @@ async def click_first_matching(page: Page, patterns: Iterable[re.Pattern], timeo
         try:
             if not await element.is_visible(timeout=500):
                 continue
+            visible = await element.evaluate(
+                """
+                el => {
+                  const style = window.getComputedStyle(el);
+                  const rect = el.getBoundingClientRect();
+                  return rect.width > 0 &&
+                    rect.height > 0 &&
+                    style.visibility !== 'hidden' &&
+                    style.display !== 'none' &&
+                    !el.disabled &&
+                    el.getAttribute('aria-disabled') !== 'true';
+                }
+                """
+            )
+            if not visible:
+                continue
         except Exception:
             continue
 
@@ -259,9 +275,12 @@ async def click_first_matching(page: Page, patterns: Iterable[re.Pattern], timeo
             pass
         if any(pattern.search(label) for pattern in patterns):
             await random_delay()
-            await element.click(timeout=timeout_ms)
-            await page.wait_for_load_state("networkidle", timeout=10000)
-            return True
+            try:
+                await element.click(timeout=timeout_ms)
+                await page.wait_for_load_state("networkidle", timeout=10000)
+                return True
+            except PlaywrightError:
+                continue
     return False
 
 
