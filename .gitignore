@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+debug/elements.json
+debug/html/*.html
+debug/screenshots/*.png
+screenshots/*.png
