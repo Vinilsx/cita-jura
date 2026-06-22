@@ -6,3 +6,4 @@ debug/elements.json
 debug/html/*.html
 debug/screenshots/*.png
 screenshots/*.png
+logs/*.log
