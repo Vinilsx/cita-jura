@@ -1,16 +1,10 @@
 name: Check Cita Sevilla
 
 on:
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: check-cita-sevilla
-  cancel-in-progress: false
+  contents: read
 
 jobs:
   check-cita:
@@ -20,8 +14,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,24 +26,10 @@ jobs:
           pip install -r requirements.txt
           playwright install --with-deps chromium
 
-      - name: Run monitor
+      - name: Run monitor once
         env:
           SAVE_ALL_SCREENSHOTS: "false"
         run: python check_cita.py
-
-      - name: Commit CSV results
-        if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/results.csv
-          if git diff --cached --quiet; then
-            echo "No CSV changes to commit."
-            exit 0
-          fi
-          git commit -m "Update cita results"
-          git pull --rebase --autostash origin main
-          git push
 
       - name: Upload results
         if: always()
@@ -62,4 +40,5 @@ jobs:
             data/results.csv
             screenshots/
             debug/
+            logs/
           if-no-files-found: ignore
